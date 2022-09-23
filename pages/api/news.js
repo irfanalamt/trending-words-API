@@ -8,12 +8,6 @@ export default function handler(req, res) {
     .topHeadlines({
       language: 'en',
     })
-    .then((response) => {
-      console.log('response:', response);
-      res.status(200).json({ response });
-    })
-    .catch((err) => {
-      console.log('error: ', err);
-      res.status(500).json({ response: err });
-    });
+    .then((response) => res.status(200).json({ response }))
+    .catch((err) => res.status(500).json({ response: err }));
 }
