@@ -1,12 +1,12 @@
+import ApiIcon from '@mui/icons-material/Api';
+import MoodIcon from '@mui/icons-material/Mood';
+import { Button, Paper } from '@mui/material';
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { Avatar, Button, Link, Paper } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import axios from 'axios';
 import { useState } from 'react';
-import ApiIcon from '@mui/icons-material/Api';
-import MoodIcon from '@mui/icons-material/Mood';
 
 export default function Index() {
   const [newsData, setNewsData] = useState(null);
@@ -54,38 +54,54 @@ export default function Index() {
   return (
     <Container maxWidth='md'>
       <Box sx={{ my: 2 }}>
-        <Typography variant='h2' component='h1' gutterBottom>
-          Fetch news headlines
+        <Typography
+          sx={{
+            backgroundColor: '#eceff1',
+            width: 'max-content',
+            p: 1,
+            boxShadow: 1,
+            m: 1,
+            fontSize: '3rem',
+          }}
+          variant='h3'
+          component='h3'
+          gutterBottom
+        >
+          Fetch news
         </Typography>
         <Button
-          sx={{ m: 1, backgroundColor: '#ff9800', color: 'black' }}
+          sx={{ m: 1, backgroundColor: '#26a69a', color: 'black' }}
           onClick={callNewsAPI}
           variant='contained'
           size='small'
         >
           Call API
-          <ApiIcon sx={{ mx: 0.5 }} />
+          <ApiIcon sx={{ mx: 0.5, fontSize: '1.2rem' }} />
         </Button>
         <Button
-          sx={{ m: 1, backgroundColor: '#ff9800', color: 'black' }}
+          sx={{ m: 1, backgroundColor: '#ffa726', color: 'black' }}
           onClick={calculateSentiment}
           variant='contained'
           size='small'
+          disabled={!newsData}
         >
           Analyze sentiment
-          <MoodIcon sx={{ mx: 0.5 }} />
+          <MoodIcon sx={{ mx: 0.5, fontSize: '1.2rem' }} />
         </Button>
         <Grid sx={{ my: 2 }} container spacing={2}>
           {newsData?.articles.map((article, i) => (
             <Grid sm={12} md={6} key={i}>
-              <Paper sx={{ mx: 1, px: 2, py: 1, backgroundColor: '#e8eaf6' }}>
-                <Typography sx={{ fontSize: '1rem' }} variant='h6'>
+              <Paper sx={{ mx: 1, px: 2, py: 1, backgroundColor: '#c5cae9' }}>
+                <Typography
+                  sx={{ fontSize: '1rem', backgroundColor: '#e8eaf6', px: 0.5 }}
+                  variant='h6'
+                >
                   {article.title}
                 </Typography>
                 {sentimentData && (
                   <Typography
                     sx={{
-                      ml: 'auto',
+                      mr: 'auto',
                       mt: 1,
                       backgroundColor: setBgColor(
                         sentimentData[i].score.toFixed(2)
