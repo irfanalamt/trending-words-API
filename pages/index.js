@@ -58,7 +58,7 @@ export default function Index() {
           Fetch news headlines
         </Typography>
         <Button
-          sx={{ mx: 1, backgroundColor: '#ff9800', color: 'black' }}
+          sx={{ m: 1, backgroundColor: '#ff9800', color: 'black' }}
           onClick={callNewsAPI}
           variant='contained'
           size='small'
@@ -67,7 +67,7 @@ export default function Index() {
           <ApiIcon sx={{ mx: 0.5 }} />
         </Button>
         <Button
-          sx={{ mx: 1, backgroundColor: '#ff9800', color: 'black' }}
+          sx={{ m: 1, backgroundColor: '#ff9800', color: 'black' }}
           onClick={calculateSentiment}
           variant='contained'
           size='small'
