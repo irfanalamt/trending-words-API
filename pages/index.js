@@ -12,17 +12,18 @@ export default function Index() {
   const [newsData, setNewsData] = useState(null);
   const [sentimentData, setSentimentData] = useState(null);
 
+  // send GET request to backend; backend returns newsData from NEWS API
   function callNewsAPI() {
     axios
       .get('/api/news')
-      .then((res) => {
-        setNewsData(res.data.response);
-        console.log('🚀 ~ .then ~ res.data.response', res.data.response);
-      })
-      .catch((err) => {
-        console.log('err:', err);
-      });
+      .then((res) =>
+        // filter out articles with no description
+        setNewsData(res.data.response.articles.filter((el) => el.description))
+      )
+      .catch((err) => console.log('err:', err));
   }
+
+  // set score bgColor based on sentiment score
   function setBgColor(score) {
     if (score < 0) return '#ec407a';
 
@@ -32,23 +33,20 @@ export default function Index() {
   }
 
   function calculateSentiment() {
-    const newsDescriptionOnly = newsData.articles.map((el) => el.description);
+    // Extract desciption from articles; create newArray of article descriptions
+    const newsDescriptionOnly = newsData.map((el) => el.description);
     console.log(
       '🚀 ~ calculateSentiment ~ newsDescriptionOnly',
       newsDescriptionOnly
     );
 
+    // Send array to backend; backend does sentiment analysis using NLP; return array of sentiment scores
     axios
       .post('/api/sentiment', {
         newsArray: newsDescriptionOnly,
       })
-      .then((res) => {
-        console.log(res.data.sentiment);
-        setSentimentData(res.data.sentiment);
-      })
-      .catch((err) => {
-        console.log('err:', err);
-      });
+      .then((res) => setSentimentData(res.data.sentiment))
+      .catch((err) => console.log('err:', err));
   }
 
   return (
@@ -89,7 +87,7 @@ export default function Index() {
           <MoodIcon sx={{ mx: 0.5, fontSize: '1.2rem' }} />
         </Button>
         <Grid sx={{ my: 2 }} container spacing={2}>
-          {newsData?.articles.map((article, i) => (
+          {newsData?.map((article, i) => (
             <Grid sm={12} md={6} key={i}>
               <Paper sx={{ mx: 1, px: 2, py: 1, backgroundColor: '#c5cae9' }}>
                 <Typography
@@ -120,6 +118,19 @@ export default function Index() {
           ))}
         </Grid>
       </Box>
+
+      <Typography
+        sx={{
+          textAlign: 'center',
+          fontSize: '1rem',
+          display: newsData ? 'flex' : 'none',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        variant='overline'
+      >
+        Life is good. ✨
+      </Typography>
     </Container>
   );
 }
