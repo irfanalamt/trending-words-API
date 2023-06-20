@@ -1,6 +1,6 @@
 import ApiIcon from '@mui/icons-material/Api';
 import MoodIcon from '@mui/icons-material/Mood';
-import {Button, Card, CardContent, Paper} from '@mui/material';
+import {Button, Card, CardContent, CircularProgress} from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -11,16 +11,19 @@ import {useState} from 'react';
 export default function Index() {
   const [newsData, setNewsData] = useState(null);
   const [sentimentData, setSentimentData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // send GET request to backend; backend returns newsData from NEWS API
   function callNewsAPI() {
+    setLoading(true);
     axios
       .get('/api/news')
       .then((res) =>
         // filter out articles with no description
         setNewsData(res.data.response.articles.filter((el) => el.description))
       )
-      .catch((err) => console.log('err:', err));
+      .catch((err) => console.log('err:', err))
+      .finally(() => setLoading(false));
   }
 
   // set score bgColor based on sentiment score
@@ -78,38 +81,42 @@ export default function Index() {
         </Button>
       </Box>
       <Grid container spacing={2} alignItems='stretch'>
-        {newsData?.map((article, i) => (
-          <Grid item xs={12} sm={6} key={i}>
-            <Card variant='outlined' sx={{backgroundColor: '#f5f5f5'}}>
-              <CardContent>
-                <Typography variant='h5' component='h2' gutterBottom>
-                  {article.title}
-                </Typography>
-                {sentimentData && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'flex-end',
-                      mt: 2,
-                    }}>
-                    <Typography variant='caption'>Sentiment Score</Typography>
-                    <Typography
-                      variant='body1'
+        {loading ? (
+          <CircularProgress sx={{mt: 4, mx: 'auto'}} />
+        ) : (
+          newsData?.map((article, i) => (
+            <Grid item xs={12} sm={6} key={i}>
+              <Card variant='outlined' sx={{backgroundColor: '#f5f5f5'}}>
+                <CardContent>
+                  <Typography variant='h5' component='h2' gutterBottom>
+                    {article.title}
+                  </Typography>
+                  {sentimentData && (
+                    <Box
                       sx={{
-                        backgroundColor: setBgColor(sentimentData[i]),
-                        px: 1,
-                        py: 0.5,
-                        ml: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        mt: 2,
                       }}>
-                      {sentimentData[i].score.toFixed(2)}
-                    </Typography>
-                  </Box>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+                      <Typography variant='caption'>Sentiment Score</Typography>
+                      <Typography
+                        variant='body1'
+                        sx={{
+                          backgroundColor: setBgColor(sentimentData[i]),
+                          px: 1,
+                          py: 0.5,
+                          ml: 1,
+                        }}>
+                        {sentimentData[i].score.toFixed(2)}
+                      </Typography>
+                    </Box>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        )}
       </Grid>
       {newsData && (
         <Typography variant='body2' align='center' sx={{my: 3}}>
